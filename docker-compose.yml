@@ -1,0 +1,35 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:password@db:5432/product_db
+    volumes:
+      - ./src:/app/src
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=product_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # test:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.test
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - DATABASE_URL=postgresql+asyncpg://user:password@db:5432/test_product_db
+  #   volumes:
+  #     - ./src:/app/src
+  #     - ./tests:/app/tests
+
+volumes:
+  postgres_data:
