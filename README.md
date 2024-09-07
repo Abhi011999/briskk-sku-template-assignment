@@ -45,16 +45,21 @@ docker compose up --build
 
 ## Data Ingestion Flow
 ```mermaid
-    flowchart TD
-        A[Upload Excel File] --> B[Process Excel File]
-        B --> C{For each row}
-        C --> |New Product| D[Create Product]
-        C --> |Existing Product| E[Add SKU to Product]
-        C --> |Next Row| C
-        C --> |Done| F[Process Images]
-        F --> G[Upload Images to S3]
-        G --> H[Ingest Data to Database]
-        H --> I[Save Products]
-        I --> J[Save SKUs]
-        J --> K[Return Ingestion Result]
+sequenceDiagram
+    participant U as User
+    participant A as API
+    participant E as Excel Processor
+    participant S as S3
+    participant DB as Database
+
+    U->>A: Upload Excel File
+    A->>E: Process Excel File
+    loop For each row
+        E->>E: Create Product / Add SKU
+    end
+    E->>S: Upload Images
+    E->>DB: Ingest Data
+    DB->>DB: Save Products
+    DB->>DB: Save SKUs
+    A->>U: Return Ingestion Result
 ```
