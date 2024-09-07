@@ -29,28 +29,32 @@ docker compose up --build
 > Note: The current setup uses a simulated S3 upload process. For production use, you'll need to implement actual S3 integration.
 
 ## SysDesign
-graph TD
-    A[Docker Compose] --> B[PostgreSQL Database]
-    A --> C[FastAPI Application]
-    C --> D[Database Models]
-    C --> E[Pydantic Models]
-    C --> F[API Endpoints]
-    C --> G[Data Processing Utils]
-    H[Alembic] --> B
-    I[Excel File] --> F
-    F --> G
-    G --> B
+```mermaid
+    graph TD
+        A[Docker Compose] --> B[PostgreSQL Database]
+        A --> C[FastAPI Application]
+        C --> D[Database Models]
+        C --> E[Pydantic Models]
+        C --> F[API Endpoints]
+        C --> G[Data Processing Utils]
+        H[Alembic] --> B
+        I[Excel File] --> F
+        F --> G
+        G --> B
+```
 
 ## Data Ingestion Flow
-flowchart TD
-    A[Upload Excel File] --> B[Process Excel File]
-    B --> C{For each row}
-    C --> |New Product| D[Create Product]
-    C --> |Existing Product| E[Add SKU to Product]
-    C --> |Next Row| C
-    C --> |Done| F[Process Images]
-    F --> G[Upload Images to S3]
-    G --> H[Ingest Data to Database]
-    H --> I[Save Products]
-    I --> J[Save SKUs]
-    J --> K[Return Ingestion Result]
+```mermaid
+    flowchart TD
+        A[Upload Excel File] --> B[Process Excel File]
+        B --> C{For each row}
+        C --> |New Product| D[Create Product]
+        C --> |Existing Product| E[Add SKU to Product]
+        C --> |Next Row| C
+        C --> |Done| F[Process Images]
+        F --> G[Upload Images to S3]
+        G --> H[Ingest Data to Database]
+        H --> I[Save Products]
+        I --> J[Save SKUs]
+        J --> K[Return Ingestion Result]
+```
