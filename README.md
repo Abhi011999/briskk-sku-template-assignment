@@ -2,6 +2,42 @@
 
 This project is a FastAPI-based application for ingesting product data from Excel files into a PostgreSQL database. It includes functionality for processing images, uploading them to S3, and storing product and SKU information.
 
+## Sys Design
+```mermaid
+    graph TD
+        A[Docker Compose] --> B[PostgreSQL Database]
+        A --> C[FastAPI Application]
+        C --> D[Database Models]
+        C --> E[Pydantic Models]
+        C --> F[API Endpoints]
+        C --> G[Data Processing Utils]
+        H[Alembic] --> B
+        I[Excel File] --> F
+        F --> G
+        G --> B
+```
+
+## Data Ingestion Flow
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as API
+    participant E as Excel Processor
+    participant S as S3
+    participant DB as Database
+
+    U->>A: Upload Excel File
+    A->>E: Process Excel File
+    loop For each row
+        E->>E: Create Product / Add SKU
+    end
+    E->>S: Upload Images
+    E->>DB: Ingest Data
+    DB->>DB: Save Products
+    DB->>DB: Save SKUs
+    A->>U: Return Ingestion Result
+```
+
 ## Setup Instructions
 1. Ensure you have Docker and Docker Compose installed on your system.
 2. Clone the repository and navigate to the project directory.
@@ -48,39 +84,3 @@ alembic downgrade -1
 5. To access the API documentation, visit `http://localhost:8000/docs` in your browser.
 
 > Note: The current setup uses a simulated S3 upload process. For production use, you'll need to implement actual S3 integration.
-
-## SysDesign
-```mermaid
-    graph TD
-        A[Docker Compose] --> B[PostgreSQL Database]
-        A --> C[FastAPI Application]
-        C --> D[Database Models]
-        C --> E[Pydantic Models]
-        C --> F[API Endpoints]
-        C --> G[Data Processing Utils]
-        H[Alembic] --> B
-        I[Excel File] --> F
-        F --> G
-        G --> B
-```
-
-## Data Ingestion Flow
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as API
-    participant E as Excel Processor
-    participant S as S3
-    participant DB as Database
-
-    U->>A: Upload Excel File
-    A->>E: Process Excel File
-    loop For each row
-        E->>E: Create Product / Add SKU
-    end
-    E->>S: Upload Images
-    E->>DB: Ingest Data
-    DB->>DB: Save Products
-    DB->>DB: Save SKUs
-    A->>U: Return Ingestion Result
-```
