@@ -15,6 +15,27 @@ S3_BUCKET=briskk-data-ingestion
 docker compose up --build
 ```
 
+## Using Alembic for Database Migrations
+
+1. Initialize Alembic (if not already done):
+```bash
+alembic init alembic
+```
+2. Create a new migration:
+```bash
+alembic revision --autogenerate -m "Description of changes"
+```
+3. Apply migrations:
+```bash
+alembic upgrade head
+```
+4. To revert migrations:
+```bash
+alembic downgrade -1
+```
+
+> Note: Make sure to run these commands in the project's root directory, where the `alembic.ini` file is located.
+
 ## How to run
 1. The application will be available at `http://localhost:8000`.
 2. To ingest data, use the `/ingest` endpoint:
